@@ -2,13 +2,13 @@ const db = require("../database/dbConfig.js");
 
 module.exports = {
   create,
-  readByID
+  read
 };
 
 function create(insert) {
     return db("Users").insert(insert);
 }
 
-function readByID(insert) {
-    return db("Users").where("id", insert);
+function read(insert) {
+    return db("Users").where("Username", insert);
 }

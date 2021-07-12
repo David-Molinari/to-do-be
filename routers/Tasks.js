@@ -3,25 +3,17 @@ const router = require("express").Router();
 const model = require("../models/Tasks");
 
 router.post("/", authenticate, (req, res) => {
-    model.create(req.body.form)
-    .then((response0) => {
-        res.status(200).json({id: response0})
+    model.create({Task: req.body.task, UserID: req.body.userId})
+    .then((response) => {
+        res.status(200).json(response)
     })
     .catch((err) => res.send(err))
 })
 
-router.get("/:Company", authenticate, (req, res) => {
-    model.read(req.params.Company)
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => res.send(err));
-});
-
-router.delete("/:mediaID", authenticate, (req, res) => {
-    model.del({id: req.params.taskID})
-    .then((response0) => {
-        res.status(200).json(response0)
+router.delete("/", authenticate, (req, res) => {
+    model.del({task: req.body.task, userId: req.body.userId})
+    .then((response) => {
+        res.status(200).json(response)
     })
     .catch((err) => res.send(err))
 })

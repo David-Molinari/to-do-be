@@ -7,17 +7,14 @@ module.exports = {
 };
 
 function create(insert) {
-    if (process.env.NODE_ENV == "development") {
-        return db("Tasks").insert(insert);
-    } else {
-        return db("Tasks").insert(insert).returning('id');
-    }
+    return db("Tasks").insert(insert);
 }
 
 function read(insert) {
-    return db("Tasks").select("*").where("UserID", insert);
+    return db("Tasks").select("Task").where("UserID", insert);
 }
 
 function del(insert) {
-    return db("Tasks").del().where("id", insert.id);
+    return db("Tasks").del().where("Task", insert.task)
+        .andWhere("UserID", insert.userId);
 }

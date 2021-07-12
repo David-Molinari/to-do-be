@@ -1,37 +1,58 @@
 const router = require("express").Router();
 const model = require("../models/Users");
+const model1 = require("../models/Tasks");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const secrets = require("../api/secrets");
 
 router.post("/add-user", (req, res) => {
     const rounds = process.env.HASH_ROUNDS || 14;
-    const hash = bcrypt.hashSync(req.body.Code, rounds);
-    model.create({...req.body, Password: hash})
-        .then((response) => {
-            res.status(200).json(response)
+    const hash = bcrypt.hashSync(req.body.password, rounds);
+    model.create({Username: req.body.username, Password: hash})
+    .then((response) => {
+        model1.read(response[0])
+        .then((response1)=> {
+            res.status(200).json({
+                auth: true,
+                token: generateToken(req.body.username, response[0]),
+                tasks: response1,
+                username: req.body.username,
+                userId: response[0]
+            })
         })
-        .catch((err) => res.send(err))
+        .catch((err)=> res.send(err))
+    })
+    .catch((err) => res.send(err))
 })
 
 router.post("/check-auth", (req, res) => {
     model.read(req.body.username)
-        .then((response) => {
-            if (bcrypt.compareSync(req.body.password, response.Password)) {
-                res.status(200).json({auth: true, 
-                    token: generateToken(req.params.username)})
-            } else {
-                res.status(400).json({auth: false})
-            }
-        })
-        .catch((err) => res.send(err));
+    .then(([response]) => {
+        if (bcrypt.compareSync(req.body.password, response.Password)) {
+            model1.read(response.id)
+            .then((response1)=> {
+                res.status(200).json({
+                    auth: true, 
+                    token: generateToken(response.Username, response.id),
+                    tasks: response1,
+                    username: response.Username,
+                    userId: response.id
+                })
+            })
+            .catch((err)=> res.send(err))
+        } else {
+            res.status(400).json({auth: false})
+        }
+    })
+    .catch((err) => res.send(err));
 });
 
 module.exports = router;
 
-function generateToken(username) {
+function generateToken(username, userId) {
     const payload = {
-      username: username
+      username: username,
+      userId: userId
     };
     const secret = secrets.jwtSecret;
     let options = {expiresIn: "5d"}

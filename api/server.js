@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const authRouter = require("../routers/Auth");
 const usersRouter = require("../routers/Users");
 const tasksRouter = require("../routers/Tasks");
 
@@ -28,6 +29,7 @@ server.get('/', (req, res) => {
         res.send('Hello!')
 })
 
+server.use("/api/auth", authRouter);
 server.use("/api/users", usersRouter);
 server.use("/api/tasks", tasksRouter);
 
