@@ -10,23 +10,15 @@ router.post("/add-user", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, rounds);
     model.create({Username: req.body.username, Password: hash})
     .then((response) => {
-        console.log(response, 'response')
-        let rId
-        if (process.env.NODE_ENV == 'development') {
-            rId = response[0]
-        } else {
-            rId = response
-        }
-        console.log(rId, 'rId')
-        model1.read(rId)
+        model1.read(response[0])
         .then((response1)=> {
             console.log(response1, 'response1')
             res.status(200).json({
                 auth: true,
-                token: generateToken(req.body.username, rId),
+                token: generateToken(req.body.username, response[0]),
                 tasks: response1,
                 username: req.body.username,
-                userId: rId
+                userId: response[0]
             })
         })
         .catch((err)=> res.send(err))

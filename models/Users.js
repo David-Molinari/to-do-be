@@ -6,11 +6,7 @@ module.exports = {
 };
 
 function create(insert) {
-  if (process.env.NODE_ENV == "development") {
     return db("Users").insert(insert);
-  } else {
-    return db("Users").insert(insert).returning('id');
-  }
 }
 
 function read(insert) {
