@@ -16,6 +16,7 @@ router.post("/add-user", (req, res) => {
         } else {
             rId = response
         }
+        console.log(response1, rId)
         model1.read(rId)
         .then((response1)=> {
             console.log(response1, rId)
