@@ -10,7 +10,6 @@ router.post("/add-user", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, rounds);
     model.create({Username: req.body.username, Password: hash})
     .then((response) => {
-        console.log(response)
         let rId
         if (process.env.NODE_ENV == 'development') {
             rId = response[0]
@@ -19,7 +18,6 @@ router.post("/add-user", (req, res) => {
         }
         model1.read(rId)
         .then((response1)=> {
-            console.log(response1, 'response1')
             res.status(200).json({
                 auth: true,
                 token: generateToken(req.body.username, rId),
