@@ -10,6 +10,7 @@ router.post("/add-user", (req, res) => {
     const hash = bcrypt.hashSync(req.body.password, rounds);
     model.create({Username: req.body.username, Password: hash})
     .then((response) => {
+        console.log(response)
         let rId
         if (process.env.NODE_ENV == 'development') {
             rId = response[0]
