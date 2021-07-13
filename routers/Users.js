@@ -8,20 +8,19 @@ const secrets = require("../api/secrets");
 router.post("/add-user", (req, res) => {
     const rounds = process.env.HASH_ROUNDS || 14;
     const hash = bcrypt.hashSync(req.body.password, rounds);
-    console.log(rounds, hash, req)
     model.create({Username: req.body.username, Password: hash})
     .then((response) => {
-        console.log(response)
+        console.log(response, 'response')
         let rId
         if (process.env.NODE_ENV == 'development') {
             rId = response[0]
         } else {
             rId = response
         }
-        console.log(rId)
+        console.log(rId, 'rId')
         model1.read(rId)
         .then((response1)=> {
-            console.log(response1, rId)
+            console.log(response1, 'response1')
             res.status(200).json({
                 auth: true,
                 token: generateToken(req.body.username, rId),
