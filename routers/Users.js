@@ -11,13 +11,14 @@ router.post("/add-user", (req, res) => {
     console.log(rounds, hash, req)
     model.create({Username: req.body.username, Password: hash})
     .then((response) => {
+        console.log(response)
         let rId
         if (process.env.NODE_ENV == 'development') {
             rId = response[0]
         } else {
             rId = response
         }
-        console.log(response1, rId)
+        console.log(rId)
         model1.read(rId)
         .then((response1)=> {
             console.log(response1, rId)
