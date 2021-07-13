@@ -18,6 +18,7 @@ router.post("/add-user", (req, res) => {
         }
         model1.read(rId)
         .then((response1)=> {
+            console.log(response1, rId)
             res.status(200).json({
                 auth: true,
                 token: generateToken(req.body.username, rId),
